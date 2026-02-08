@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Development/private folders (not for public repo)
+design/
+reference/
+docs/
+tools/
+site/
+haccp-pro/
+
+# Loose files in root from original structure
+HACCP_PRO_PRD_v1.docx
+HACCP_Report_Gennaio_2026.pdf
+
+# Environment
+.env
+.env.local

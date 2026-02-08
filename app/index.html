@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>HACCP Pro</title>
+<meta name="description" content="Gestione schede autocontrollo HACCP offline-first">
+<meta name="theme-color" content="#C45D2C">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.svg">
+<link rel="icon" type="image/svg+xml" href="assets/icons/icon-192.svg">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr" id="main-hdr" style="display:none;">
+  <div class="hdr-left">
+    <div class="hdr-avatar" id="hdr-avatar">HP</div>
+    <div>
+      <div class="hdr-greet" id="hdr-greet">Buongiorno</div>
+      <div class="hdr-name" id="hdr-name">HACCP Pro</div>
+    </div>
+  </div>
+</div>
+
+<div class="cnt">
+
+  <!-- ====== ONBOARDING ====== -->
+  <div class="pg" id="p-onboarding">
+    <div class="onb-hero">
+      <div class="logo-big">HP</div>
+      <h1>Benvenuto in HACCP Pro</h1>
+      <p>Configura la tua azienda per iniziare</p>
+    </div>
+    <div class="card">
+      <div class="card-t">Dati Azienda</div>
+      <div class="fr"><label class="fl">Ragione Sociale</label><input type="text" class="fi" id="onb-ragione" placeholder="es. Pizzeria Da Mario"></div>
+      <div class="f2">
+        <div class="fr"><label class="fl">P.IVA</label><input type="text" class="fi" id="onb-piva" placeholder="01234567890"></div>
+        <div class="fr"><label class="fl">Telefono</label><input type="text" class="fi" id="onb-telefono" placeholder="+39 ..."></div>
+      </div>
+      <div class="fr"><label class="fl">Indirizzo</label><input type="text" class="fi" id="onb-indirizzo" placeholder="Via Roma 1, Milano"></div>
+      <div class="f2">
+        <div class="fr">
+          <label class="fl">Tipo Attivit&agrave;</label>
+          <select class="fs" id="onb-tipo">
+            <option value="">Seleziona...</option>
+            <option>Bar</option>
+            <option>Ristorante</option>
+            <option>Pizzeria</option>
+            <option>Panificio</option>
+            <option>Pasticceria</option>
+            <option>Gastronomia</option>
+            <option>Altro</option>
+          </select>
+        </div>
+        <div class="fr"><label class="fl">Responsabile HACCP</label><input type="text" class="fi" id="onb-responsabile" placeholder="Nome Cognome"></div>
+      </div>
+      <button class="btn-full" id="btn-onb-salva" style="margin-top:8px;">Inizia a usare HACCP Pro</button>
+    </div>
+  </div>
+
+  <!-- ====== DASHBOARD ====== -->
+  <div class="pg" id="p-dash">
+    <!-- Demo watermark -->
+    <div class="demo-watermark" id="demo-watermark" style="display:none;">DEMO</div>
+    <!-- Demo upgrade banner -->
+    <div class="demo-banner" id="demo-upgrade-banner" style="display:none;">
+      <div class="demo-banner-ico">🔒</div>
+      <div class="demo-banner-txt">
+        <div class="demo-banner-title">Modalit&agrave; Demo</div>
+        <div class="demo-banner-sub">Attiva la licenza in Impostazioni per sbloccare tutte le funzionalit&agrave;</div>
+      </div>
+      <div class="demo-banner-btn" onclick="App.nav('sett')">Attiva</div>
+    </div>
+    <div class="hero">
+      <div class="hero-title">HACCP Pro</div>
+      <div class="hero-sub">Riepilogo autocontrollo di oggi</div>
+      <div class="hero-chips">
+        <div class="hero-chip"><span class="n" id="dash-temp-count">0</span> Temperature</div>
+        <div class="hero-chip"><span class="n" id="dash-pul-count">0</span> Pulizie</div>
+        <div class="hero-chip"><span class="n" id="dash-lotti-count">0</span> Lotti</div>
+      </div>
+    </div>
+
+    <div class="qgrid">
+      <div class="qcard" data-nav="temp">
+        <div class="qbadge hide" id="qb-temp"></div>
+        <span class="qemoji">🌡️</span>
+        <div class="qlabel">Temperature</div>
+        <div class="qsub">Registra frigoriferi</div>
+      </div>
+      <div class="qcard" data-nav="tracc">
+        <div class="qbadge hide" id="qb-tracc"></div>
+        <span class="qemoji">📦</span>
+        <div class="qlabel">Tracciabilit&agrave;</div>
+        <div class="qsub">Schede ingredienti</div>
+      </div>
+      <div class="qcard" data-nav="pul">
+        <div class="qbadge hide" id="qb-pul"></div>
+        <span class="qemoji">🧹</span>
+        <div class="qlabel">Pulizie</div>
+        <div class="qsub">Giornaliere e settimanali</div>
+      </div>
+      <div class="qcard" data-nav="sett">
+        <span class="qemoji">⚙️</span>
+        <div class="qlabel">Impostazioni</div>
+        <div class="qsub">Setup frigoriferi</div>
+      </div>
+    </div>
+
+    <div class="report-banner" data-nav="report">
+      <div class="report-banner-ico">📄</div>
+      <div class="report-banner-txt">
+        <div class="report-banner-title">Esporta Report PDF</div>
+        <div class="report-banner-sub">Genera schede e report mensile</div>
+      </div>
+      <svg class="report-banner-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+    </div>
+
+    <div class="card">
+      <div class="card-t">Attivit&agrave; Recenti</div>
+      <div id="dash-activity">
+        <div class="empty-state"><span class="emoji">📋</span><p>Nessuna attivit&agrave; registrata</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TEMPERATURE ====== -->
+  <div class="pg" id="p-temp">
+    <div class="pg-hdr">
+      <div class="back-btn" data-nav="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="pg-title">Temperature</div>
+    </div>
+    <div id="temp-list"></div>
+    <button class="btn-full" id="btn-temp-salva" style="margin-top:8px; display:none;">💾 Salva Registrazioni</button>
+    <div class="card" style="margin-top:20px;">
+      <div class="card-t">Storico</div>
+      <div class="filter-row">
+        <input type="date" class="fi" id="temp-filter-date">
+      </div>
+      <div id="temp-storico">
+        <div class="empty-state"><span class="emoji">📊</span><p>Nessuna registrazione</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== TRACCIABILITA ====== -->
+  <div class="pg" id="p-tracc">
+    <div class="pg-hdr">
+      <div class="back-btn" data-nav="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="pg-title">Tracciabilit&agrave;</div>
+    </div>
+    <div class="card">
+      <div class="card-t">Nuova Scheda</div>
+      <div class="fr"><label class="fl">Prodotto</label><input type="text" class="fi" id="tracc-prodotto" placeholder="es. Mozzarella"></div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Data</label><input type="date" class="fi" id="tracc-data"></div>
+        <div class="fr"><label class="fl">Lotto</label><input type="text" class="fi" id="tracc-lotto" placeholder="MB2025-0128"></div>
+      </div>
+      <div class="fr"><label class="fl">Fornitore</label><input type="text" class="fi" id="tracc-fornitore" placeholder="es. Caseificio Vannulo"></div>
+      <div class="f2">
+        <div class="fr">
+          <label class="fl">Conformit&agrave;</label>
+          <div class="radio-group">
+            <label><input type="radio" name="tracc-conf" value="1" checked> S&igrave;</label>
+            <label><input type="radio" name="tracc-conf" value="0"> No</label>
+          </div>
+        </div>
+        <div class="fr"><label class="fl">Firma</label><input type="text" class="fi" id="tracc-firma" placeholder="Nome"></div>
+      </div>
+      <button class="btn-full" id="btn-tracc-salva" style="margin-top:8px;">💾 Salva Scheda</button>
+    </div>
+    <div class="card">
+      <div class="card-t">Storico</div>
+      <div id="tracc-storico">
+        <div class="empty-state"><span class="emoji">📦</span><p>Nessuna scheda registrata</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== PULIZIE ====== -->
+  <div class="pg" id="p-pul">
+    <div class="pg-hdr">
+      <div class="back-btn" data-nav="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="pg-title">Pulizie</div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" id="tab-pul-d">Giornaliera</button>
+      <button class="tab" id="tab-pul-w">Settimanale</button>
+    </div>
+    <!-- Giornaliera -->
+    <div class="card" id="pul-form-d">
+      <div class="card-t">🧹 Pulizia Giornaliera</div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Data</label><input type="date" class="fi" id="pul-d-data"></div>
+        <div class="fr"><label class="fl">Firma</label><input type="text" class="fi" id="pul-d-firma" placeholder="Operatore"></div>
+      </div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Attrezzature</label><select class="fs" id="pul-d-attrezzature"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+        <div class="fr"><label class="fl">Piani Lavoro</label><select class="fs" id="pul-d-pianiLavoro"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+      </div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Lavelli</label><select class="fs" id="pul-d-lavelli"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+        <div class="fr"><label class="fl">Cestini</label><select class="fs" id="pul-d-cestini"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+      </div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Pavimenti</label><select class="fs" id="pul-d-pavimenti"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+        <div class="fr"><label class="fl">Sanitari</label><select class="fs" id="pul-d-sanitari"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+      </div>
+      <button class="btn-full" id="btn-pul-d-salva" style="margin-top:8px;">💾 Salva</button>
+    </div>
+    <!-- Settimanale -->
+    <div class="card" id="pul-form-w" style="display:none;">
+      <div class="card-t">🧽 Pulizia Settimanale</div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Data</label><input type="date" class="fi" id="pul-w-data"></div>
+        <div class="fr"><label class="fl">Ora</label><input type="time" class="fi" id="pul-w-ora"></div>
+      </div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Cella Frigo</label><select class="fs" id="pul-w-cellaFrigo"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+        <div class="fr"><label class="fl">Rubinetterie</label><select class="fs" id="pul-w-rubinetterie"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+      </div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Interruttori</label><select class="fs" id="pul-w-interruttori"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+        <div class="fr"><label class="fl">Mensole</label><select class="fs" id="pul-w-mensole"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+      </div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Maniglie</label><select class="fs" id="pul-w-maniglie"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+        <div class="fr"><label class="fl">Zanzariere</label><select class="fs" id="pul-w-zanzariere"><option value="Eseguito">Eseguito</option><option value="Non eseguito">Non eseguito</option></select></div>
+      </div>
+      <div class="fr"><label class="fl">Firma</label><input type="text" class="fi" id="pul-w-firma" placeholder="Operatore"></div>
+      <button class="btn-full" id="btn-pul-w-salva" style="margin-top:8px;">💾 Salva</button>
+    </div>
+    <!-- Storico pulizie -->
+    <div class="card" style="margin-top:8px;">
+      <div class="card-t">Storico</div>
+      <div id="pul-storico">
+        <div class="empty-state"><span class="emoji">🧹</span><p>Nessuna pulizia registrata</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ====== ESPORTA REPORT ====== -->
+  <div class="pg" id="p-report">
+    <div class="pg-hdr">
+      <div class="back-btn" data-nav="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="pg-title">Esporta Report</div>
+    </div>
+    <!-- Selettore periodo -->
+    <div class="card">
+      <div class="card-t">📅 Seleziona Periodo</div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Mese</label><select class="fs" id="report-mese"></select></div>
+        <div class="fr"><label class="fl">Anno</label><select class="fs" id="report-anno"></select></div>
+      </div>
+    </div>
+    <!-- Singole schede -->
+    <div class="card">
+      <div class="card-t">📄 Singole Schede</div>
+      <div class="pdf-btn-grid">
+        <button class="pdf-btn" id="btn-pdf-temp"><span class="pdf-btn-ico">🌡️</span>Temperature</button>
+        <button class="pdf-btn" id="btn-pdf-tracc"><span class="pdf-btn-ico">📦</span>Tracciabilit&agrave;</button>
+        <button class="pdf-btn" id="btn-pdf-pul-g"><span class="pdf-btn-ico">🧹</span>Pulizie Giorn.</button>
+        <button class="pdf-btn" id="btn-pdf-pul-s"><span class="pdf-btn-ico">🧽</span>Pulizie Sett.</button>
+      </div>
+    </div>
+    <!-- Report completo -->
+    <div class="card">
+      <div class="card-t">📋 Report Completo</div>
+      <p style="font-size:13px;color:var(--text-sec);margin-bottom:12px;">Frontespizio + tutte le 4 schede in un unico PDF professionale per i controlli ASL/NAS.</p>
+      <button class="btn-full" id="btn-pdf-completo">📑 Genera Report Mensile Completo</button>
+    </div>
+  </div>
+
+  <!-- ====== IMPOSTAZIONI ====== -->
+  <div class="pg" id="p-sett">
+    <div class="pg-hdr">
+      <div class="back-btn" data-nav="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="pg-title">Impostazioni</div>
+    </div>
+    <!-- Dati Azienda -->
+    <div class="card" id="sett-azienda-card">
+      <div class="card-t">🏢 Dati Azienda</div>
+      <div id="sett-azienda-info"></div>
+      <button class="btn-full" id="btn-sett-modifica" style="margin-top:12px; background:var(--blue);">Modifica Dati</button>
+    </div>
+    <!-- Form modifica azienda (nascosto) -->
+    <div class="card" id="sett-azienda-edit" style="display:none;">
+      <div class="card-t">🏢 Modifica Dati Azienda</div>
+      <div class="fr"><label class="fl">Ragione Sociale</label><input type="text" class="fi" id="sett-ragione"></div>
+      <div class="f2">
+        <div class="fr"><label class="fl">P.IVA</label><input type="text" class="fi" id="sett-piva"></div>
+        <div class="fr"><label class="fl">Telefono</label><input type="text" class="fi" id="sett-telefono"></div>
+      </div>
+      <div class="fr"><label class="fl">Indirizzo</label><input type="text" class="fi" id="sett-indirizzo"></div>
+      <div class="f2">
+        <div class="fr">
+          <label class="fl">Tipo Attivit&agrave;</label>
+          <select class="fs" id="sett-tipo">
+            <option value="">Seleziona...</option>
+            <option>Bar</option>
+            <option>Ristorante</option>
+            <option>Pizzeria</option>
+            <option>Panificio</option>
+            <option>Pasticceria</option>
+            <option>Gastronomia</option>
+            <option>Altro</option>
+          </select>
+        </div>
+        <div class="fr"><label class="fl">Responsabile HACCP</label><input type="text" class="fi" id="sett-responsabile"></div>
+      </div>
+      <button class="btn-full" id="btn-sett-salva" style="margin-top:8px;">💾 Salva Modifiche</button>
+    </div>
+    <!-- Licenza -->
+    <div class="card">
+      <div class="card-t">🔑 Licenza</div>
+      <div id="license-card-content"></div>
+    </div>
+    <!-- Aggiungi Frigorifero -->
+    <div class="card">
+      <div class="card-t">⚙️ Aggiungi Frigorifero</div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Nome</label><input type="text" class="fi" id="frigo-nome" placeholder="Frigo Bar 1"></div>
+        <div class="fr">
+          <label class="fl">Tipo</label>
+          <select class="fs" id="frigo-tipo">
+            <option value="Positivo">Positivo</option>
+            <option value="Negativo">Negativo</option>
+            <option value="Freezer">Freezer</option>
+          </select>
+        </div>
+      </div>
+      <div class="f2">
+        <div class="fr"><label class="fl">Min &deg;C</label><input type="number" class="fi" id="frigo-min" placeholder="0"></div>
+        <div class="fr"><label class="fl">Max &deg;C</label><input type="number" class="fi" id="frigo-max" placeholder="4"></div>
+      </div>
+      <button class="btn-full" id="btn-frigo-add" style="margin-top:8px;">➕ Aggiungi</button>
+    </div>
+    <!-- Lista Frigoriferi -->
+    <div class="card">
+      <div class="card-t">📋 I tuoi Frigoriferi</div>
+      <div id="frigo-list">
+        <div class="empty-state"><span class="emoji">❄️</span><p>Nessun frigorifero configurato</p></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bnav" id="main-bnav" style="display:none;">
+  <button class="bnav-item on" data-p="dash">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+    Home
+  </button>
+  <button class="bnav-item" data-p="temp">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>
+    Temp.
+  </button>
+  <button class="bnav-item" data-p="tracc">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    Lotti
+  </button>
+  <button class="bnav-item" data-p="pul">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 5H2v7l6.29 6.29a1 1 0 0 0 1.42 0l4.58-4.58a1 1 0 0 0 0-1.42L9 5z"/></svg>
+    Pulizie
+  </button>
+  <button class="bnav-item" data-p="sett">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09"/></svg>
+    Setup
+  </button>
+</nav>
+
+<!-- Scripts -->
+<script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+<script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
+<script src="https://unpkg.com/jspdf-autotable@latest/dist/jspdf.plugin.autotable.min.js"></script>
+<script src="js/db.js"></script>
+<script src="js/license.js"></script>
+<script src="js/modules/impostazioni.js"></script>
+<script src="js/modules/temperature.js"></script>
+<script src="js/modules/tracciabilita.js"></script>
+<script src="js/modules/pulizie.js"></script>
+<script src="js/pdf/report.js"></script>
+<script src="js/app.js"></script>
+
+</body>
+</html>

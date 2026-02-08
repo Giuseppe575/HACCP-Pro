@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Acquista HACCP Pro - Licenza Completa</title>
+<meta name="description" content="Acquista la licenza completa di HACCP Pro. Pagamento unico, nessun abbonamento. Sblocca tutte le funzionalit&agrave;.">
+<meta name="theme-color" content="#C45D2C">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="navbar-inner">
+    <a href="index.html" class="navbar-logo">
+      <div class="navbar-logo-icon">HP</div>
+      HACCP Pro
+    </a>
+    <div class="navbar-links" id="nav-links">
+      <a href="index.html#features">Funzionalit&agrave;</a>
+      <a href="index.html#pricing">Prezzi</a>
+      <a href="index.html#faq">FAQ</a>
+    </div>
+    <button class="navbar-toggle" id="nav-toggle" aria-label="Menu">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+  </div>
+</nav>
+
+<!-- PURCHASE -->
+<div class="purchase-page">
+  <div class="purchase-card">
+    <h1>Acquista HACCP Pro</h1>
+    <p class="purchase-sub">Licenza completa, pagamento unico, tua per sempre.</p>
+
+    <div class="purchase-summary">
+      <div class="row">
+        <span class="label">Prodotto</span>
+        <span>HACCP Pro - Licenza Completa</span>
+      </div>
+      <div class="row">
+        <span class="label">Tipo</span>
+        <span>Pagamento unico</span>
+      </div>
+      <div class="row">
+        <span class="label">Prezzo</span>
+        <span>&euro;49,00 + IVA</span>
+      </div>
+      <div class="row">
+        <span class="label">Totale (IVA incl.)</span>
+        <span>&euro;59,78</span>
+      </div>
+    </div>
+
+    <!-- PayPal Button -->
+    <div class="purchase-paypal" id="paypal-button-container"></div>
+
+    <div class="purchase-info">
+      <strong>Come funziona:</strong> Dopo il pagamento via PayPal, riceverai il codice licenza via email entro 24 ore lavorative. Inseriscilo in Impostazioni &gt; Licenza nell'app per sbloccare tutte le funzionalit&agrave;.
+    </div>
+
+    <div class="purchase-steps">
+      <h3>Come attivare la licenza</h3>
+      <div class="purchase-step">
+        <div class="purchase-step-num">1</div>
+        <p>Completa il pagamento con PayPal o carta di credito</p>
+      </div>
+      <div class="purchase-step">
+        <div class="purchase-step-num">2</div>
+        <p>Ricevi il codice licenza (formato HP-XXXXXXXX-YYYY) via email</p>
+      </div>
+      <div class="purchase-step">
+        <div class="purchase-step-num">3</div>
+        <p>Apri HACCP Pro, vai in <strong>Impostazioni &gt; Licenza</strong> e inserisci il codice</p>
+      </div>
+      <div class="purchase-step">
+        <div class="purchase-step-num">4</div>
+        <p>Tutte le funzionalit&agrave; sono sbloccate immediatamente!</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center;margin-top:24px;">
+    <a href="index.html" style="font-size:14px;color:var(--text-muted);">&larr; Torna alla home</a>
+  </div>
+</div>
+
+<!-- FOOTER (compact) -->
+<footer class="footer" style="padding:30px 24px;">
+  <div class="footer-bottom" style="margin:0;padding:0;border:none;">
+    <span>&copy; 2026 Giuseppe Strifezza. Tutti i diritti riservati.</span>
+    <span>
+      <a href="privacy.html">Privacy</a>
+      <a href="cookies.html">Cookie</a>
+      <a href="termini.html">Termini</a>
+    </span>
+  </div>
+</footer>
+
+<!-- PayPal SDK (Sandbox) -->
+<script src="https://www.paypal.com/sdk/js?client-id=sb&currency=EUR"></script>
+<script>
+paypal.Buttons({
+  style: {
+    layout: 'vertical',
+    color: 'gold',
+    shape: 'rect',
+    label: 'paypal',
+    height: 48
+  },
+  createOrder: function(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        description: 'HACCP Pro - Licenza Completa',
+        amount: { value: '59.78', currency_code: 'EUR' }
+      }]
+    });
+  },
+  onApprove: function(data, actions) {
+    return actions.order.capture().then(function(details) {
+      var name = details.payer.name.given_name;
+      var email = details.payer.email_address;
+      document.getElementById('paypal-button-container').innerHTML =
+        '<div style="background:#E6F7F4;border:1.5px solid #0E7C6B;border-radius:14px;padding:24px;text-align:center;">' +
+          '<div style="font-size:36px;margin-bottom:8px;">&#10003;</div>' +
+          '<div style="font-size:18px;font-weight:800;color:#0E7C6B;margin-bottom:8px;">Pagamento completato!</div>' +
+          '<p style="font-size:14px;color:#6B5E55;">Grazie ' + name + '! Riceverai il codice licenza a <strong>' + email + '</strong> entro 24 ore lavorative.</p>' +
+        '</div>';
+    });
+  },
+  onError: function(err) {
+    document.getElementById('paypal-button-container').innerHTML =
+      '<div style="background:#FFF1F2;border:1.5px solid #C41E3A;border-radius:14px;padding:20px;text-align:center;">' +
+        '<p style="color:#C41E3A;font-weight:700;">Errore nel pagamento. Riprova o contattaci a atis.giuseppe@gmail.com</p>' +
+      '</div>';
+  }
+}).render('#paypal-button-container');
+</script>
+
+<!-- Cookie Banner -->
+<script src="js/cookie-banner.js"></script>
+
+<!-- Mobile Nav Toggle -->
+<script>
+document.getElementById('nav-toggle').addEventListener('click', function() {
+  document.getElementById('nav-links').classList.toggle('open');
+});
+</script>
+
+</body>
+</html>
