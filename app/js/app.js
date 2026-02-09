@@ -21,7 +21,7 @@ const App = (() => {
     // Trigger page-specific renders
     if (page === 'dash') refreshDashboard();
     if (page === 'temp') { Temperature.renderForm(); Temperature.renderStorico(); }
-    if (page === 'tracc') Tracciabilita.renderStorico();
+    if (page === 'tracc') { Tracciabilita.renderStorico(); TracciabilitaInterna.renderStorico(); }
     if (page === 'pul') Pulizie.renderStorico();
     if (page === 'sett') { Impostazioni.renderAziendaInfo(); Impostazioni.renderFrigoList(); License.renderLicenseCard(); }
     if (page === 'report') License.renderDemoUI();
@@ -61,10 +61,12 @@ const App = (() => {
     const tempCount = await Temperature.countToday();
     const pulCount = await Pulizie.countToday();
     const lottiCount = await Tracciabilita.countAll();
+    const prodCount = await TracciabilitaInterna.countAll();
 
     document.getElementById('dash-temp-count').textContent = tempCount;
     document.getElementById('dash-pul-count').textContent = pulCount;
     document.getElementById('dash-lotti-count').textContent = lottiCount;
+    document.getElementById('dash-prod-count').textContent = prodCount;
 
     // Badges on quick grid
     const qbTemp = document.getElementById('qb-temp');
@@ -72,7 +74,7 @@ const App = (() => {
     else { qbTemp.className = 'qbadge hide'; }
 
     const qbTracc = document.getElementById('qb-tracc');
-    if (lottiCount > 0) { qbTracc.className = 'qbadge ok'; qbTracc.textContent = '✓'; }
+    if (lottiCount > 0 || prodCount > 0) { qbTracc.className = 'qbadge ok'; qbTracc.textContent = '✓'; }
     else { qbTracc.className = 'qbadge hide'; }
 
     const qbPul = document.getElementById('qb-pul');
@@ -89,9 +91,10 @@ const App = (() => {
   async function renderRecentActivity() {
     const el = document.getElementById('dash-activity');
 
-    const [temps, lotti, pulizie] = await Promise.all([
+    const [temps, lotti, produzioni, pulizie] = await Promise.all([
       Temperature.getRecent(5),
       Tracciabilita.getRecent(5),
+      TracciabilitaInterna.getRecent(5),
       Pulizie.getRecent(5)
     ]);
 
@@ -113,6 +116,16 @@ const App = (() => {
         type: 'tracc',
         text: `<strong>${r.prodotto}</strong> — Lotto ${r.lotto}`,
         icon: '📦',
+        iconClass: 'b',
+        time: r.creatoIl
+      });
+    });
+
+    produzioni.forEach(r => {
+      activities.push({
+        type: 'traccint',
+        text: `<strong>${r.nome}</strong> — ${r.lottoInterno || 'Produzione'}`,
+        icon: '🍳',
         iconClass: 'b',
         time: r.creatoIl
       });
@@ -233,6 +246,7 @@ const App = (() => {
     Impostazioni.init();
     Temperature.init();
     Tracciabilita.init();
+    TracciabilitaInterna.init();
     Pulizie.init();
     HACCPReport.init();
     await checkOnboarding();

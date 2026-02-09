@@ -78,8 +78,11 @@ const HACCPReport = (() => {
     const allPS = await db.pulizieSettimanali.toArray();
     const pulSett = allPS.filter(r => r.data && r.data.startsWith(prefix));
 
+    const allTraccInt = await db.tracciabilitaInterna.toArray();
+    const tracciabilitaInterna = allTraccInt.filter(r => r.dataPreparazione && r.dataPreparazione.startsWith(prefix));
+
     return {
-      azienda, frigoriferi, temperature, tracciabilita, pulGiorn, pulSett,
+      azienda, frigoriferi, temperature, tracciabilita, tracciabilitaInterna, pulGiorn, pulSett,
       anno, mese, meseNome: MESI[mese],
       periodo: `${MESI[mese]} ${anno}`
     };
@@ -220,9 +223,10 @@ const HACCPReport = (() => {
     doc.setTextColor(...C_TEXT_SEC);
     const sections = [
       '1. Scheda Registrazione Temperature',
-      '2. Scheda Tracciabilit\u00E0 Materie Prime',
-      '3. Scheda Pulizia e Sanificazione Giornaliera',
-      '4. Scheda Pulizia e Sanificazione Settimanale'
+      '2. Scheda Rintracciabilit\u00E0 Materie Prime',
+      '3. Scheda Tracciabilit\u00E0 Interna \u2014 Produzioni',
+      '4. Scheda Pulizia e Sanificazione Giornaliera',
+      '5. Scheda Pulizia e Sanificazione Settimanale'
     ];
     sections.forEach(s => {
       doc.text(s, PW / 2, y, { align: 'center' });
@@ -394,13 +398,13 @@ const HACCPReport = (() => {
     doc.setTextColor(...C_TEXT);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(14);
-    doc.text(`${num}. Tracciabilit\u00E0 Materie Prime`, ML, y);
+    doc.text(`${num}. Rintracciabilit\u00E0 Materie Prime`, ML, y);
 
     y += 7;
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(9.5);
     doc.setTextColor(...C_TEXT_SEC);
-    doc.text(`Periodo: ${data.periodo} \u2014 Registro ricevimento e conformit\u00E0 ingredienti`, ML, y);
+    doc.text(`Periodo: ${data.periodo} \u2014 Registro rintracciabilit\u00E0 materie prime in entrata`, ML, y);
     y += 8;
 
     if (!records.length) {
@@ -640,6 +644,67 @@ const HACCPReport = (() => {
     doc.text('Firma Responsabile HACCP: ____________________', ML, fy);
   }
 
+  // ─────────── Sezione 5: Tracciabilità Interna ───────────
+
+  function addTracciabilitaInterna(doc, data, sectionNum) {
+    const records = data.tracciabilitaInterna;
+    const num = sectionNum || '3';
+
+    let y = MT + 4;
+    doc.setTextColor(...C_TEXT);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(14);
+    doc.text(`${num}. Tracciabilit\u00E0 Interna \u2014 Produzioni`, ML, y);
+
+    y += 7;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9.5);
+    doc.setTextColor(...C_TEXT_SEC);
+    doc.text(`Periodo: ${data.periodo} \u2014 Registro preparazioni e produzioni interne`, ML, y);
+    y += 8;
+
+    if (!records.length) {
+      doc.setFontSize(10);
+      doc.setTextColor(...C_TEXT_MUT);
+      doc.text('Nessuna registrazione per questo periodo.', ML, y);
+      return;
+    }
+
+    const sorted = [...records].sort((a, b) => (a.dataPreparazione || '').localeCompare(b.dataPreparazione || ''));
+
+    const head = [['Data Prep.', 'Preparazione', 'Ingredienti', 'Scadenza', 'Lotto', 'Qt\u00E0', 'Conserv.', 'Firma']];
+    const body = sorted.map(r => [
+      r.dataPreparazione ? fmtDate(r.dataPreparazione + 'T00:00:00') : '',
+      r.nome || '',
+      r.ingredienti || '',
+      r.dataScadenza ? fmtDate(r.dataScadenza + 'T00:00:00') : '',
+      r.lottoInterno || '',
+      r.quantita || '',
+      r.luogoConservazione || '',
+      r.firma || ''
+    ]);
+
+    doc.autoTable({
+      startY: y,
+      margin: { top: MT, bottom: MB + 2, left: ML, right: MR },
+      head: head,
+      body: body,
+      theme: 'grid',
+      headStyles: { fillColor: C_ACCENT, textColor: C_WHITE, fontStyle: 'bold', fontSize: 7, cellPadding: 2.5 },
+      styles: { fontSize: 7, cellPadding: 2, textColor: C_TEXT, lineColor: [221, 213, 203], lineWidth: 0.3 },
+      columnStyles: { 0: { cellWidth: 20 }, 2: { cellWidth: 32 }, 3: { cellWidth: 20 }, 7: { cellWidth: 18 } },
+      alternateRowStyles: { fillColor: C_ROW_ALT }
+    });
+
+    let fy = doc.lastAutoTable.finalY;
+    if (fy > PH - MB - 15) { doc.addPage(); fy = MT + 4; }
+    fy += 5;
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...C_TEXT_SEC);
+    doc.text(`Riepilogo: ${sorted.length} produzioni registrate`, ML, fy);
+  }
+
   // ─────────── Generatori PDF pubblici ───────────
 
   function savePdf(doc, filename) {
@@ -660,12 +725,23 @@ const HACCPReport = (() => {
   async function pdfTracciabilita(anno, mese) {
     if (!(await License.canExportPDF())) { App.toast('Attiva la licenza per esportare PDF'); return; }
     const data = await fetchData(anno, mese);
-    if (!data.tracciabilita.length) { App.toast('Nessuna tracciabilit\u00E0 registrata per questo periodo'); return; }
+    if (!data.tracciabilita.length) { App.toast('Nessuna rintracciabilit\u00E0 registrata per questo periodo'); return; }
     const doc = newDoc();
     addTracciabilita(doc, data, '1');
     applyHeadersFooters(doc, data.azienda, data.periodo, false);
-    savePdf(doc, `HACCP_Tracciabilita_${data.meseNome}_${anno}.pdf`);
-    App.toast('PDF Tracciabilit\u00E0 generato');
+    savePdf(doc, `HACCP_Rintracciabilita_${data.meseNome}_${anno}.pdf`);
+    App.toast('PDF Rintracciabilit\u00E0 generato');
+  }
+
+  async function pdfTracciabilitaInterna(anno, mese) {
+    if (!(await License.canExportPDF())) { App.toast('Attiva la licenza per esportare PDF'); return; }
+    const data = await fetchData(anno, mese);
+    if (!data.tracciabilitaInterna.length) { App.toast('Nessuna produzione registrata per questo periodo'); return; }
+    const doc = newDoc();
+    addTracciabilitaInterna(doc, data, '1');
+    applyHeadersFooters(doc, data.azienda, data.periodo, false);
+    savePdf(doc, `HACCP_TraccInterna_${data.meseNome}_${anno}.pdf`);
+    App.toast('PDF Tracciabilit\u00E0 Interna generato');
   }
 
   async function pdfPulizieGiorn(anno, mese) {
@@ -693,7 +769,7 @@ const HACCPReport = (() => {
   async function pdfCompleto(anno, mese) {
     if (!(await License.canExportPDF())) { App.toast('Attiva la licenza per esportare PDF'); return; }
     const data = await fetchData(anno, mese);
-    const hasAny = data.temperature.length || data.tracciabilita.length || data.pulGiorn.length || data.pulSett.length;
+    const hasAny = data.temperature.length || data.tracciabilita.length || data.tracciabilitaInterna.length || data.pulGiorn.length || data.pulSett.length;
     if (!hasAny) { App.toast('Nessun dato registrato per questo periodo'); return; }
 
     const doc = newDoc();
@@ -705,17 +781,21 @@ const HACCPReport = (() => {
     doc.addPage();
     addTemperature(doc, data, '1');
 
-    // New page: Tracciabilit\u00E0
+    // New page: Rintracciabilit\u00E0
     doc.addPage();
     addTracciabilita(doc, data, '2');
 
+    // New page: Tracciabilit\u00E0 Interna
+    doc.addPage();
+    addTracciabilitaInterna(doc, data, '3');
+
     // New page: Pulizie Giornaliere
     doc.addPage();
-    addPulizieGiorn(doc, data, '3');
+    addPulizieGiorn(doc, data, '4');
 
     // New page: Pulizie Settimanali
     doc.addPage();
-    addPulizieSett(doc, data, '4');
+    addPulizieSett(doc, data, '5');
 
     // Apply headers/footers to all pages except frontespizio
     applyHeadersFooters(doc, data.azienda, data.periodo, true);
@@ -762,6 +842,9 @@ const HACCPReport = (() => {
     document.getElementById('btn-pdf-tracc').addEventListener('click', () => {
       const p = getSelectedPeriod(); pdfTracciabilita(p.anno, p.mese);
     });
+    document.getElementById('btn-pdf-traccint').addEventListener('click', () => {
+      const p = getSelectedPeriod(); pdfTracciabilitaInterna(p.anno, p.mese);
+    });
     document.getElementById('btn-pdf-pul-g').addEventListener('click', () => {
       const p = getSelectedPeriod(); pdfPulizieGiorn(p.anno, p.mese);
     });
@@ -773,5 +856,5 @@ const HACCPReport = (() => {
     });
   }
 
-  return { init, pdfTemperature, pdfTracciabilita, pdfPulizieGiorn, pdfPulizieSett, pdfCompleto };
+  return { init, pdfTemperature, pdfTracciabilita, pdfTracciabilitaInterna, pdfPulizieGiorn, pdfPulizieSett, pdfCompleto };
 })();

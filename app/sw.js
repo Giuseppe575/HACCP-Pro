@@ -1,4 +1,4 @@
-const CACHE_NAME = 'haccp-pro-v4';
+const CACHE_NAME = 'haccp-pro-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const ASSETS = [
   './js/app.js',
   './js/modules/temperature.js',
   './js/modules/tracciabilita.js',
+  './js/modules/tracciabilita-interna.js',
   './js/modules/pulizie.js',
   './js/modules/impostazioni.js',
   './js/pdf/report.js'

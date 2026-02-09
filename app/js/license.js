@@ -11,6 +11,7 @@ const License = (() => {
     maxFrigo: 2,
     maxTempDays: 7,
     maxTracc: 5,
+    maxTraccInt: 5,
     maxPulDays: 7
   };
 
@@ -97,6 +98,12 @@ const License = (() => {
     if (await isLicensed()) return true;
     const count = await db.tracciabilita.count();
     return count < DEMO_LIMITS.maxTracc;
+  }
+
+  async function canAddTracciabilitaInterna() {
+    if (await isLicensed()) return true;
+    const count = await db.tracciabilitaInterna.count();
+    return count < DEMO_LIMITS.maxTraccInt;
   }
 
   async function canAddPulizia() {
@@ -205,7 +212,7 @@ const License = (() => {
 
   return {
     init, validateLicense, isLicensed, activateLicense, getLicenseInfo,
-    canAddFrigo, canAddTemperature, canAddTracciabilita, canAddPulizia, canExportPDF,
+    canAddFrigo, canAddTemperature, canAddTracciabilita, canAddTracciabilitaInterna, canAddPulizia, canExportPDF,
     getLimits, renderLicenseCard, renderDemoUI
   };
 })();

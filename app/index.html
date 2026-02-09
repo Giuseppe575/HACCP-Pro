@@ -81,7 +81,8 @@
       <div class="hero-chips">
         <div class="hero-chip"><span class="n" id="dash-temp-count">0</span> Temperature</div>
         <div class="hero-chip"><span class="n" id="dash-pul-count">0</span> Pulizie</div>
-        <div class="hero-chip"><span class="n" id="dash-lotti-count">0</span> Lotti</div>
+        <div class="hero-chip"><span class="n" id="dash-lotti-count">0</span> Rintr.</div>
+        <div class="hero-chip"><span class="n" id="dash-prod-count">0</span> Produzioni</div>
       </div>
     </div>
 
@@ -95,8 +96,8 @@
       <div class="qcard" data-nav="tracc">
         <div class="qbadge hide" id="qb-tracc"></div>
         <span class="qemoji">📦</span>
-        <div class="qlabel">Tracciabilit&agrave;</div>
-        <div class="qsub">Schede ingredienti</div>
+        <div class="qlabel">Rintracciabilit&agrave;</div>
+        <div class="qsub">Materie prime e produzioni</div>
       </div>
       <div class="qcard" data-nav="pul">
         <div class="qbadge hide" id="qb-pul"></div>
@@ -147,36 +148,77 @@
     </div>
   </div>
 
-  <!-- ====== TRACCIABILITA ====== -->
+  <!-- ====== LOTTI (Rintracciabilità + Tracciabilità Interna) ====== -->
   <div class="pg" id="p-tracc">
     <div class="pg-hdr">
       <div class="back-btn" data-nav="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
-      <div class="pg-title">Tracciabilit&agrave;</div>
+      <div class="pg-title">Lotti</div>
     </div>
-    <div class="card">
-      <div class="card-t">Nuova Scheda</div>
-      <div class="fr"><label class="fl">Prodotto</label><input type="text" class="fi" id="tracc-prodotto" placeholder="es. Mozzarella"></div>
-      <div class="f2">
-        <div class="fr"><label class="fl">Data</label><input type="date" class="fi" id="tracc-data"></div>
-        <div class="fr"><label class="fl">Lotto</label><input type="text" class="fi" id="tracc-lotto" placeholder="MB2025-0128"></div>
-      </div>
-      <div class="fr"><label class="fl">Fornitore</label><input type="text" class="fi" id="tracc-fornitore" placeholder="es. Caseificio Vannulo"></div>
-      <div class="f2">
-        <div class="fr">
-          <label class="fl">Conformit&agrave;</label>
-          <div class="radio-group">
-            <label><input type="radio" name="tracc-conf" value="1" checked> S&igrave;</label>
-            <label><input type="radio" name="tracc-conf" value="0"> No</label>
-          </div>
+    <div class="tabs">
+      <button class="tab on" id="tab-tracc-r">Rintracciabilit&agrave;</button>
+      <button class="tab" id="tab-tracc-i">Tracc. Interna</button>
+    </div>
+    <!-- Rintracciabilità (materie prime in entrata) -->
+    <div id="tracc-form-r">
+      <div class="card">
+        <div class="card-t">Nuova Scheda</div>
+        <div class="fr"><label class="fl">Prodotto</label><input type="text" class="fi" id="tracc-prodotto" placeholder="es. Mozzarella"></div>
+        <div class="f2">
+          <div class="fr"><label class="fl">Data</label><input type="date" class="fi" id="tracc-data"></div>
+          <div class="fr"><label class="fl">Lotto</label><input type="text" class="fi" id="tracc-lotto" placeholder="MB2025-0128"></div>
         </div>
-        <div class="fr"><label class="fl">Firma</label><input type="text" class="fi" id="tracc-firma" placeholder="Nome"></div>
+        <div class="fr"><label class="fl">Fornitore</label><input type="text" class="fi" id="tracc-fornitore" placeholder="es. Caseificio Vannulo"></div>
+        <div class="f2">
+          <div class="fr">
+            <label class="fl">Conformit&agrave;</label>
+            <div class="radio-group">
+              <label><input type="radio" name="tracc-conf" value="1" checked> S&igrave;</label>
+              <label><input type="radio" name="tracc-conf" value="0"> No</label>
+            </div>
+          </div>
+          <div class="fr"><label class="fl">Firma</label><input type="text" class="fi" id="tracc-firma" placeholder="Nome"></div>
+        </div>
+        <button class="btn-full" id="btn-tracc-salva" style="margin-top:8px;">💾 Salva Scheda</button>
       </div>
-      <button class="btn-full" id="btn-tracc-salva" style="margin-top:8px;">💾 Salva Scheda</button>
+      <div class="card">
+        <div class="card-t">Storico</div>
+        <div id="tracc-storico">
+          <div class="empty-state"><span class="emoji">📦</span><p>Nessuna scheda registrata</p></div>
+        </div>
+      </div>
     </div>
-    <div class="card">
-      <div class="card-t">Storico</div>
-      <div id="tracc-storico">
-        <div class="empty-state"><span class="emoji">📦</span><p>Nessuna scheda registrata</p></div>
+    <!-- Tracciabilità Interna (produzioni) -->
+    <div id="tracc-form-i" style="display:none;">
+      <div class="card">
+        <div class="card-t">Nuova Produzione</div>
+        <div class="fr"><label class="fl">Nome Preparazione</label><input type="text" class="fi" id="traccint-nome" placeholder="es. Lasagne"></div>
+        <div class="fr"><label class="fl">Ingredienti utilizzati</label><input type="text" class="fi" id="traccint-ingredienti" placeholder="es. besciamella, rag&ugrave;, pasta"></div>
+        <div class="f2">
+          <div class="fr"><label class="fl">Data Preparazione</label><input type="date" class="fi" id="traccint-data-prep"></div>
+          <div class="fr"><label class="fl">Data Scadenza</label><input type="date" class="fi" id="traccint-data-scad"></div>
+        </div>
+        <div class="f2">
+          <div class="fr"><label class="fl">Lotto Interno</label><input type="text" class="fi" id="traccint-lotto" placeholder="PREP-090226-001"></div>
+          <div class="fr"><label class="fl">Quantit&agrave;</label><input type="text" class="fi" id="traccint-quantita" placeholder="es. 500g, 2 porzioni"></div>
+        </div>
+        <div class="f2">
+          <div class="fr">
+            <label class="fl">Luogo Conservazione</label>
+            <select class="fs" id="traccint-luogo">
+              <option value="Frigo">Frigo</option>
+              <option value="Congelatore">Congelatore</option>
+              <option value="Dispensa">Dispensa</option>
+            </select>
+          </div>
+          <div class="fr"><label class="fl">Firma Operatore</label><input type="text" class="fi" id="traccint-firma" placeholder="Nome"></div>
+        </div>
+        <button class="btn-full" id="btn-traccint-salva" style="margin-top:8px;">💾 Salva Produzione</button>
+      </div>
+      <div class="card">
+        <div class="card-t">Storico</div>
+        <div id="traccint-storico">
+          <div class="empty-state"><span class="emoji">🍳</span><p>Nessuna produzione registrata</p></div>
+        </div>
       </div>
     </div>
   </div>
@@ -262,7 +304,8 @@
       <div class="card-t">📄 Singole Schede</div>
       <div class="pdf-btn-grid">
         <button class="pdf-btn" id="btn-pdf-temp"><span class="pdf-btn-ico">🌡️</span>Temperature</button>
-        <button class="pdf-btn" id="btn-pdf-tracc"><span class="pdf-btn-ico">📦</span>Tracciabilit&agrave;</button>
+        <button class="pdf-btn" id="btn-pdf-tracc"><span class="pdf-btn-ico">📦</span>Rintracciabilit&agrave;</button>
+        <button class="pdf-btn" id="btn-pdf-traccint"><span class="pdf-btn-ico">🍳</span>Tracc. Interna</button>
         <button class="pdf-btn" id="btn-pdf-pul-g"><span class="pdf-btn-ico">🧹</span>Pulizie Giorn.</button>
         <button class="pdf-btn" id="btn-pdf-pul-s"><span class="pdf-btn-ico">🧽</span>Pulizie Sett.</button>
       </div>
@@ -270,7 +313,7 @@
     <!-- Report completo -->
     <div class="card">
       <div class="card-t">📋 Report Completo</div>
-      <p style="font-size:13px;color:var(--text-sec);margin-bottom:12px;">Frontespizio + tutte le 4 schede in un unico PDF professionale per i controlli ASL/NAS.</p>
+      <p style="font-size:13px;color:var(--text-sec);margin-bottom:12px;">Frontespizio + tutte le 5 schede in un unico PDF professionale per i controlli ASL/NAS.</p>
       <button class="btn-full" id="btn-pdf-completo">📑 Genera Report Mensile Completo</button>
     </div>
   </div>
@@ -383,6 +426,7 @@
 <script src="js/modules/impostazioni.js"></script>
 <script src="js/modules/temperature.js"></script>
 <script src="js/modules/tracciabilita.js"></script>
+<script src="js/modules/tracciabilita-interna.js"></script>
 <script src="js/modules/pulizie.js"></script>
 <script src="js/pdf/report.js"></script>
 <script src="js/app.js"></script>

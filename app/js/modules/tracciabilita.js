@@ -40,7 +40,7 @@ const Tracciabilita = (() => {
     document.querySelector('input[name="tracc-conf"][value="1"]').checked = true;
 
     await renderStorico();
-    App.toast('Scheda tracciabilità salvata');
+    App.toast('Scheda rintracciabilità salvata');
   }
 
   async function renderStorico() {

@@ -10,3 +10,8 @@ db.version(1).stores({
   pulizieSettimanali:  '++id, data',
   licenza:             'id, codice'
 });
+
+// v2: aggiunta tabella tracciabilità interna (produzioni)
+db.version(2).stores({
+  tracciabilitaInterna: '++id, nome, dataPreparazione, dataScadenza, lottoInterno'
+});
